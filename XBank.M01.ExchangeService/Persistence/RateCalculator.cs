@@ -7,21 +7,33 @@ namespace XBank.M01.ExchangeService.Persistence
     {
         public static ExchangeItem CalculateRate(ExchangeRequestItem requestItem, ExchangeItem rateResult)
         {
-            var exchangeItem = new ExchangeItem { FromCurrency = requestItem.FromCurrency, ToCurrency = requestItem.ToCurrency, FromAmount = requestItem.FromAmount };
-            if (!string.IsNullOrEmpty(requestItem.FromAmount))
+            try
             {
-                var amount = float.Parse(requestItem.FromAmount);
-                var rate = float.Parse(rateResult.Rate);
+                var exchangeItem = new ExchangeItem { FromCurrency = requestItem.FromCurrency, ToCurrency = requestItem.ToCurrency, FromAmount = requestItem.FromAmount };
 
-                var calculatedAmount = amount * rate;
+                if (requestItem.FromCurrency == requestItem.ToCurrency) { return default!; }
 
-                exchangeItem.Rate = rateResult.Rate;
-                exchangeItem.ToAmount = calculatedAmount.ToString();
-                exchangeItem.RateTime = rateResult.RateTime;
+                if (!string.IsNullOrEmpty(requestItem.FromAmount))
+                {
+                    var amount = float.Parse(requestItem.FromAmount);
+                    var rate = float.Parse(rateResult.Rate);
+
+                    if (rate == 0) return default!;
+
+                    var calculatedAmount = amount * rate;
+
+                    exchangeItem.Rate = rateResult.Rate;
+                    exchangeItem.ToAmount = calculatedAmount.ToString();
+                    exchangeItem.RateTime = rateResult.RateTime;
+                }
+
+                return exchangeItem;
             }
-
-            return exchangeItem;
-
+            catch (Exception ex)
+            {
+                throw;
+            }
+          
         }
     }
 }
