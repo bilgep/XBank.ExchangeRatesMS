@@ -2,7 +2,8 @@
 This project provides a microservices environment for XBank contains, Exchange Service, Client Services and Transaction Service. All services in system contains Restful APIs. 
 ### Architecture Diagram
 System architecture diagram is shown in the below image.
-![XBank_MicroservicesSystemDiagram](https://github.com/bilgep/XBankMS_ExchangeRates/assets/46197519/baff64a6-8650-4c68-97ff-deb83e2f34cd)
+![XBank_MicroservicesSystemDiagram](https://github.com/bilgep/XBank.ExchangeRatesMS/assets/46197519/a9009503-f4c7-49e6-93dc-c8088f6842a4)
+
 
 ### Notes
 - The Exchange Rate provider API used in this project is the Collect API (https://collectapi.com/api/economy/gold-currency-and-exchange-api). You can run Exchange Service project by acquiring an API Key from that site. 
