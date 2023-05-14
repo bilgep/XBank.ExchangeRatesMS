@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,34 +13,43 @@ namespace XBank.M01.ExchangeService.Tests
 {
     public class ExchangeServiceTests
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<ExchangeRateService> _logger;
+        private readonly Mock<IHttpClientFactory> mockIHttpClient;
+        private readonly Mock<IConfiguration> mockConfiguration;
+        private readonly Mock<ILogger<ExchangeRateService>> mockLogger;
+        private readonly ExchangeRateService exchangeRateService;
 
-        //public ExchangeServiceTests(IHttpClientFactory httpClientFactory, IConfiguration configuration,
-        //     ILogger<ExchangeRateService> logger)
-        //{
-        //    _httpClientFactory = httpClientFactory;
-        //    _configuration = configuration;
-        //    _logger = logger;
-        //}
+        public ExchangeServiceTests()
+        {
+            mockIHttpClient = new Mock<IHttpClientFactory>();
+            var client = new HttpClient();
 
-        // Add Moq
+            mockIHttpClient.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(client);
+            mockLogger = new Mock<ILogger<ExchangeRateService>>();
+
+            mockConfiguration = new Mock<IConfiguration>();
+            mockConfiguration.Setup(x => x["ApiKey"]).Returns("put_your_apikey");
+
+            exchangeRateService = new ExchangeRateService(mockIHttpClient.Object, mockConfiguration.Object, mockLogger.Object);
+        }
+
 
         [Fact]
-        public void GetExchangeRate_ValidRequest_ResponseNotNull()
+        public async Task GetExchangeRate_ValidRequest_ResponseNotNull()
         {
             // Arrange
-            // Add Moq
-            //var testExchangeService = new ExchangeRateService(_httpClientFactory, _configuration, _logger);
-            //var exchangeRequest = new ExchangeRequestItem { FromAmount = "10", FromCurrency = CurrenyNames.Usd, ToCurrency = CurrenyNames.Euro };
+            var exchangeRequestItem = new ExchangeRequestItem 
+            { 
+                FromCurrency = CurrenyNames.Usd,
+                ToCurrency = CurrenyNames.Euro,
+                FromAmount = "10",
+                RequestTime = DateTime.UtcNow.ToString()
+            };
 
             // Act
-            //var response = testExchangeService.GetExchangeRate(exchangeRequest);
+            var response = await exchangeRateService.GetExchangeRate(exchangeRequestItem);
 
             // Assert
-            //Assert.NotNull(response);
-            Assert.True(true);
+            Assert.NotNull(response);
         }
 
         // Test Cases
