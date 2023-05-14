@@ -27,7 +27,7 @@ namespace XBank.M03.TransactionService.Repository
             TimeSpan ts = DateTime.UtcNow - firstAddedTime;
             if (objectResponse.TransactionTimes.Count == 10 && ts.Minutes < 60)
             {
-                return false;
+                return true;
             }
 
             if (objectResponse!.TransactionTimes.Count == 10)
