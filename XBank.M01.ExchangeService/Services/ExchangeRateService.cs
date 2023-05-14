@@ -26,6 +26,7 @@ namespace XBank.ExchangeService.Services
                 var httpResponse = await client.GetFromJsonAsync<ExchangeResponseItem>(requestUrl);
                 var responseItem = new ExchangeItem();
                 // implement automapper
+                // null check
                 if (httpResponse != null && httpResponse.Result.Data.Count > 0)
                 {
 
