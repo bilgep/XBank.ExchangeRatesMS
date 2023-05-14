@@ -4,6 +4,8 @@ using XBank.M03.TransactionService.Repository;
 
 namespace XBank.M03.TransactionService.Controllers
 {
+    [ApiController]
+    [Route("[controller")]
     public class ExchangeTransactionController : Controller
     {
         private readonly ILogger<ExchangeTransactionController> _logger;
@@ -15,6 +17,8 @@ namespace XBank.M03.TransactionService.Controllers
             _exchangeTransactionRepository = exchangeTransactionRepository;
         }
 
+        [HttpPost]
+        [Route("/execute")]
         public async Task<IActionResult> ExecuteTransaction(ClientExchangeTransaction clientExchangeTransaction)
         {
             // TODO[Bilge] A Transaction pattern with Rollback feature will be implemented later

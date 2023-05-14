@@ -18,31 +18,37 @@ namespace XBank.M03.TransactionService.Repository
         {
             // Get Cached
             var byteResponse = await _distributedCache.GetAsync("XBank", CancellationToken.None);
-            var stringResponse = Encoding.UTF8.GetString(byteResponse!);
-            var objectResponse = JsonSerializer.Deserialize<ExchangeTransactionCache>(stringResponse);
-
-
-            // Validate Transaction
-            var firstAddedTime = objectResponse!.TransactionTimes.First();
-            TimeSpan ts = DateTime.UtcNow - firstAddedTime;
-            if (objectResponse.TransactionTimes.Count == 10 && ts.Minutes < 60)
+            if (byteResponse != null)
             {
-                return true;
+                var stringResponse = Encoding.UTF8.GetString(byteResponse!);
+                var objectResponse = JsonSerializer.Deserialize<ExchangeTransactionCache>(stringResponse);
+
+                // Validate Transaction
+                var firstAddedTime = objectResponse!.TransactionTimes.First();
+                TimeSpan ts = DateTime.UtcNow - firstAddedTime;
+                if (objectResponse.TransactionTimes.Count == 10 && ts.Minutes < 60)
+                {
+                    objectResponse.TransactionTimes.Add(DateTime.UtcNow);
+                    return true;
+                }
+
+
+                if (objectResponse!.TransactionTimes.Count == 10)
+                {
+                    objectResponse.TransactionTimes.RemoveAt(0);
+                    objectResponse!.TransactionTimes.Add(DateTime.UtcNow);
+                }
+            }
+            else 
+            {
+                var cacheObjt = new ExchangeTransactionCache { ClientId = clientExchangeTransaction.ClientId, TransactionTimes = new List<DateTime>() { DateTime.UtcNow } };
+                var serializedData = JsonSerializer.Serialize(cacheObjt);
+                var dataAsByteArray = Encoding.UTF8.GetBytes(serializedData);
+                await _distributedCache.SetAsync("XBank", dataAsByteArray);
             }
 
-            if (objectResponse!.TransactionTimes.Count == 10)
-            {
-                objectResponse.TransactionTimes.RemoveAt(0);
-                objectResponse!.TransactionTimes.Add(DateTime.UtcNow);
-            }
-                
+
             // Transaction Operations Executed
-
-
-            // Set Cached
-            var serializedData = JsonSerializer.Serialize(objectResponse);
-            var dataAsByteArray = Encoding.UTF8.GetBytes(serializedData);
-            await _distributedCache.SetAsync("products", dataAsByteArray);
 
             return true;
         }
