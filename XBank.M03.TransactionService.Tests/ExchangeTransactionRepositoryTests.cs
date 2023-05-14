@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace XBank.M03.TransactionService.Tests
 {
-    internal class ExchangeTransactionRepositoryTests
+    public class ExchangeTransactionRepositoryTests
     {
+
     }
 }

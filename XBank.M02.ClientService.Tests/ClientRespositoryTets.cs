@@ -8,5 +8,6 @@ namespace XBank.M02.ClientService.Tests
 {
     public class ClientRespositoryTets
     {
+
     }
 }

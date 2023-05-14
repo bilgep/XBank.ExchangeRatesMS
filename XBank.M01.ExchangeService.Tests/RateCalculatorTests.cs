@@ -30,7 +30,7 @@ namespace XBank.M01.ExchangeService.Tests
         public void WhenFromUsdToEuro_RateIsZero_ReturnDefault()
         {
             // Arrange
-            var exchangeRequestItem = new ExchangeRequestItem { FromAmount = "10", FromCurrency = CurrenyNames.Usd, ToCurrency = CurrenyNames.Usd };
+            var exchangeRequestItem = new ExchangeRequestItem { FromAmount = "10", FromCurrency = CurrenyNames.Usd, ToCurrency = CurrenyNames.Euro };
             var exchangeItem = new ExchangeItem { Rate = "0" };
 
             // Act
